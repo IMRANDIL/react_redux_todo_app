@@ -1,5 +1,46 @@
 
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { act } from "@testing-library/react";
+
+
+
+
+export const getTodoAsync = createAsyncThunk('todos/getTodosAsync', async () => {
+    const response = await fetch(`http://localhost:7000/todos`);
+    if (response.ok) {
+        const todos = await response.json();
+        return {
+            todos
+        }
+    }
+})
+
+
+
+export const addTodoAsync = createAsyncThunk('todos/addTodoAsync', async (payload) => {
+
+
+    const response = await fetch(`http://localhost:7000/todos`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title: payload.title })
+    });
+
+    if (response.ok) {
+        const todo = await response.json();
+
+        return { todo }
+    }
+
+
+
+})
+
+
+
+
 
 
 
@@ -27,6 +68,18 @@ const todoSlice = createSlice({
         },
         deleteTodo: (state, action) => {
             return state.filter((todo) => todo.id !== action.payload.id)
+        }
+    },
+    extraReducers: {
+        [getTodoAsync.pending]: (state, action) => {
+            console.log('fetching data');
+        },
+        [getTodoAsync.fulfilled]: (state, action) => {
+            console.log('fetched data');
+            return action.payload.todos
+        },
+        [addTodoAsync.fulfilled]: (state, action) => {
+            state.push(act.payload.todo)
         }
     }
 });
