@@ -79,7 +79,7 @@ const todoSlice = createSlice({
             return action.payload.todos
         },
         [addTodoAsync.fulfilled]: (state, action) => {
-            state.push(act.payload.todo)
+            state.push(act.payload.todos)
         }
     }
 });
