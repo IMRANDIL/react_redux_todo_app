@@ -1,6 +1,6 @@
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { act } from "@testing-library/react";
+
 
 
 
@@ -9,6 +9,7 @@ export const getTodoAsync = createAsyncThunk('todos/getTodosAsync', async () => 
     const response = await fetch(`http://localhost:7000/todos`);
     if (response.ok) {
         const todos = await response.json();
+
         return {
             todos
         }
@@ -29,9 +30,9 @@ export const addTodoAsync = createAsyncThunk('todos/addTodoAsync', async (payloa
     });
 
     if (response.ok) {
-        const todo = await response.json();
+        const todos = await response.json();
 
-        return { todo }
+        return { todos }
     }
 
 
@@ -79,7 +80,7 @@ const todoSlice = createSlice({
             return action.payload.todos
         },
         [addTodoAsync.fulfilled]: (state, action) => {
-            state.push(act.payload.todos)
+            state.push(action.payload.todos)
         }
     }
 });
